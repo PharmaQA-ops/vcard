@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0878e8">
+<title>Gaerish Marketing · QR Library</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,Segoe UI,Arial,sans-serif;color:#12324f}
+body{background:radial-gradient(circle at 8% 4%,#bfe9ff 0,transparent 30%),radial-gradient(circle at 95% 10%,#c8f5ff 0,transparent 28%),linear-gradient(135deg,#edf8ff,#dff1ff 48%,#f9fcff);min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}
+.top{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:18px clamp(15px,4vw,36px);background:rgba(255,255,255,.58);border-bottom:1px solid rgba(255,255,255,.85);backdrop-filter:blur(22px)}
+.brand h1{margin:0;font-size:clamp(21px,3vw,30px);letter-spacing:-.7px}.brand p{margin:5px 0 0;color:#6d879e;font-size:11px;font-weight:700}
+.wrap{width:min(1450px,94vw);margin:25px auto 50px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}.stat{padding:17px 18px;border:1px solid rgba(255,255,255,.9);border-radius:20px;background:rgba(255,255,255,.63);box-shadow:0 20px 55px rgba(18,91,140,.14);backdrop-filter:blur(18px)}.label{font-size:9px;letter-spacing:1px;color:#7892a8;font-weight:900}.value{font-size:27px;font-weight:950;margin-top:4px}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;padding:12px;margin-bottom:15px;border:1px solid rgba(255,255,255,.8);border-radius:18px;background:rgba(255,255,255,.55);backdrop-filter:blur(18px)}.search{flex:1;min-width:260px}input,select{border:1px solid #d3e5f3;background:rgba(255,255,255,.85);border-radius:12px;padding:11px 12px;outline:none;color:#12324f}input:focus,select:focus{border-color:#57aaf0;box-shadow:0 0 0 3px rgba(8,120,232,.1)}
+.btn{border:0;border-radius:11px;padding:10px 14px;font-weight:850}.primary{background:linear-gradient(135deg,#0878e8,#20b7f2);color:#fff;box-shadow:0 8px 20px rgba(8,120,232,.22)}.light{background:rgba(255,255,255,.84);color:#173b5d;border:1px solid #d9e8f3}.dark{background:#123a61;color:#fff}.green{background:#eafaf2;color:#08784a;border:1px solid #c5efd8}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:15px}.card{position:relative;padding:15px;border-radius:22px;background:rgba(255,255,255,.67);border:1px solid rgba(255,255,255,.9);box-shadow:0 20px 55px rgba(18,91,140,.14);backdrop-filter:blur(20px);transition:.16s}.card:hover{transform:translateY(-2px);box-shadow:0 25px 65px rgba(18,91,140,.19)}.check{position:absolute;top:13px;left:13px;width:18px;height:18px}.qr{width:175px;height:175px;display:block;object-fit:contain;margin:7px auto 13px;border-radius:15px;background:#fff;padding:8px;box-shadow:0 8px 22px rgba(15,74,115,.12)}.name{font-size:14px;font-weight:950}.meta{font-size:10px;color:#728aa0;margin-top:3px;line-height:1.45}.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}.actions .btn{padding:8px 7px;font-size:10px}.filename{margin-top:8px;font-size:9px;color:#7891a6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{text-align:center;padding:50px;color:#7790a7;font-size:12px}.loading{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(5,30,55,.18);backdrop-filter:blur(7px)}.loading.show{display:flex}.loader{padding:24px 30px;border-radius:20px;background:rgba(255,255,255,.92);box-shadow:0 25px 70px rgba(0,40,80,.2);text-align:center}.spinner{width:31px;height:31px;border:3px solid #dcecf8;border-top-color:#0878e8;border-radius:50%;animation:spin .7s linear infinite;margin:auto}@keyframes spin{to{transform:rotate(360deg)}}.toast{position:fixed;right:18px;bottom:18px;z-index:60;display:none;max-width:390px;padding:12px 15px;border-radius:13px;background:#123a61;color:#fff;font-size:11px;font-weight:750;box-shadow:0 15px 35px rgba(0,30,70,.24)}.toast.show{display:block}
+@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.top{align-items:flex-start;flex-direction:column}.top .btn{width:100%}}@media(max-width:520px){.wrap{width:96vw}.stats{gap:8px}.stat{padding:13px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card{padding:10px;border-radius:17px}.qr{width:125px;height:125px}.actions{grid-template-columns:1fr}.search{min-width:100%}}
+
+/* =========================================================
+   GGL CLAYMORPHIC RESPONSIVE UI OVERRIDES
+   ========================================================= */
+:root{
+  --clay-bg:#eaf3fa;
+  --clay-surface:#edf6fc;
+  --clay-text:#12324f;
+  --clay-muted:#718ba3;
+  --clay-blue:#1686e8;
+  --clay-shadow-light:rgba(255,255,255,.95);
+  --clay-shadow-dark:rgba(92,126,155,.22);
+}
+body{
+  background:
+    radial-gradient(circle at 10% 8%,rgba(255,255,255,.95),transparent 28%),
+    radial-gradient(circle at 92% 12%,rgba(177,226,255,.55),transparent 30%),
+    linear-gradient(145deg,#dfeef8,#edf6fc 48%,#dcecf7);
+  color:var(--clay-text);
+}
+.topbar,.top,.toolbar,.stats .stat,.stat,.table-wrap,.modal-box,.photo-section,.company-panel,.badge-panel{
+  background:rgba(235,245,252,.88)!important;
+  border:1px solid rgba(255,255,255,.95)!important;
+  box-shadow:8px 8px 20px var(--clay-shadow-dark),-8px -8px 20px var(--clay-shadow-light)!important;
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.btn,input,select,textarea,.company-option,.badge-option{
+  box-shadow:4px 4px 10px rgba(92,126,155,.16),-4px -4px 10px rgba(255,255,255,.92);
+}
+.btn:active{transform:translateY(1px);box-shadow:inset 3px 3px 7px rgba(92,126,155,.18),inset -3px -3px 7px rgba(255,255,255,.8)}
+.stat{border-radius:22px!important}
+.table-wrap{border-radius:24px!important;overflow:auto}
+th{background:rgba(224,238,248,.8)!important}
+td,th{border-color:rgba(188,211,227,.65)!important}
+.modal{background:rgba(58,91,116,.25)!important}
+.modal-box{border-radius:28px!important}
+@media(max-width:800px){
+  .container,.wrap{width:95vw!important}
+  .toolbar{padding:10px!important}
+}
+@media(max-width:600px){
+  .container,.wrap{width:94vw!important;margin-top:16px!important}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .stat{min-width:0}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><h1>Gaerish Marketing · QR Library</h1><p>Download existing employee QR codes · Read-only marketing access</p></div>
+  <button class="btn primary" onclick="loadQRs()">↻ Refresh Library</button>
+</header>
+<main class="wrap">
+  <section class="stats">
+    <div class="stat"><div class="label">AVAILABLE QR</div><div class="value" id="total">0</div></div>
+    <div class="stat"><div class="label">VISIBLE</div><div class="value" id="visible">0</div></div>
+    <div class="stat"><div class="label">SELECTED</div><div class="value" id="selected">0</div></div>
+    <div class="stat"><div class="label">STATUS</div><div class="value" id="status">—</div></div>
+  </section>
+  <section class="toolbar">
+    <input class="search" id="search" placeholder="Search Employee ID, name, designation or department…" oninput="render()">
+    <select id="department" onchange="render()"><option value="">All departments</option></select>
+    <button class="btn light" onclick="selectVisible()">Select Visible</button>
+    <button class="btn light" onclick="clearSelection()">Clear</button>
+    <button class="btn dark" onclick="downloadSelected()">Download Selected</button>
+    <button class="btn green" onclick="downloadAll()">Download All ZIP</button>
+  </section>
+  <section id="grid" class="grid"></section>
+</main>
+<div class="loading" id="loading"><div class="loader"><div class="spinner"></div><div style="margin-top:12px;font-weight:850;font-size:12px" id="loadText">Loading QR library…</div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+'use strict';
+
+// Paste your deployed Apps Script Web App /exec URL here.
+const API_URL = 'https://script.google.com/macros/s/AKfycbyOnaQEYIqjIqdAeBY8KNk0brPmJ4IvBA5pPHfvdDhP18zFknmOwmPw8R-9PG8hS7lLIg/exec';
+
+let items=[];
+let selected=new Set();
+
+function init(){
+  document.getElementById('search').addEventListener('keydown',e=>{if(e.key==='Escape'){e.target.value='';render()}});
+  if(API_URL.includes('PASTE_YOUR')){toast('Set API_URL at the top of this file first.');return;}
+  loadQRs();
+}
+
+async function loadQRs(){
+  showLoading('Loading existing QR files…');
+  try{
+    const url=API_URL+'?action=qrdirectory&callback=marketingQR_'+Date.now();
+    const data=await jsonp(url);
+    if(!data || !data.success) throw new Error(data?.error||'Unable to load QR directory');
+    items=Array.isArray(data.employees)?data.employees:[];
+    selected=new Set([...selected].filter(id=>items.some(x=>x.employeeId===id)));
+    buildDepartments();render();
+    document.getElementById('status').textContent='READY';
+  }catch(err){
+    document.getElementById('grid').innerHTML='<div class="empty" style="grid-column:1/-1">Unable to load QR library.<br><br>'+esc(err.message)+'</div>';
+    document.getElementById('status').textContent='ERROR';toast(err.message);
+  }finally{hideLoading()}
+}
+
+function jsonp(url){
+  return new Promise((resolve,reject)=>{
+    const callback='marketingQR_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const script=document.createElement('script');
+    const timer=setTimeout(()=>{cleanup();reject(new Error('QR directory request timed out.'))},20000);
+    window[callback]=data=>{cleanup();resolve(data)};
+    script.src=url.replace(/callback=[^&]*/, 'callback='+callback);
+    script.onerror=()=>{cleanup();reject(new Error('Could not connect to the Apps Script backend.'))};
+    document.head.appendChild(script);
+    function cleanup(){clearTimeout(timer);delete window[callback];script.remove()}
+  });
+}
+
+function buildDepartments(){
+  const select=document.getElementById('department');
+  const current=select.value;
+  const departments=[...new Set(items.map(x=>String(x.department||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  select.innerHTML='<option value="">All departments</option>'+departments.map(d=>'<option>'+escAttr(d)+'</option>').join('');
+  if(departments.includes(current))select.value=current;
+}
+
+function filtered(){
+  const q=document.getElementById('search').value.trim().toLowerCase();
+  const d=document.getElementById('department').value;
+  return items.filter(x=>{
+    const hay=[x.employeeId,x.name,x.designation,x.department].join(' ').toLowerCase();
+    return (!q||hay.includes(q))&&(!d||String(x.department||'')===d);
+  });
+}
+
+function render(){
+  const list=filtered();
+  document.getElementById('total').textContent=items.length;
+  document.getElementById('visible').textContent=list.length;
+  document.getElementById('selected').textContent=selected.size;
+  const grid=document.getElementById('grid');
+  if(!list.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1">No QR files match the current search.</div>';return}
+  grid.innerHTML=list.map(x=>card(x)).join('');
+}
+
+function card(x){
+  const checked=selected.has(x.employeeId)?'checked':'';
+  const safeUrl=escAttr(x.downloadUrl||'');
+  return `<article class="card">
+    <input class="check" type="checkbox" ${checked} onchange="toggle('${js(x.employeeId)}',this.checked)">
+    <img class="qr" src="${safeUrl}" alt="${escAttr(x.employeeId)} QR" loading="lazy" onerror="this.src='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\"><rect width=\"100%\" height=\"100%\" fill=\"white\"/><text x=\"50%\" y=\"50%\" text-anchor=\"middle\" dominant-baseline=\"middle\" font-family=\"Arial\" font-size=\"14\">QR unavailable</text></svg>')">
+    <div class="name">${esc(x.name||'Unnamed')}</div>
+    <div class="meta"><b>${esc(x.employeeId)}</b> · ${esc(x.designation||'')}</div>
+    <div class="meta">${esc(x.department||'No department')}</div>
+    <div class="filename">${esc(x.fileName||x.employeeId+'_QR.png')}</div>
+    <div class="actions">
+      <button class="btn primary" onclick="downloadOne('${js(x.employeeId)}')">Download</button>
+      <button class="btn light" onclick="openQR('${js(x.employeeId)}')">Preview</button>
+    </div>
+  </article>`;
+}
+
+function toggle(id,on){if(on)selected.add(id);else selected.delete(id);render()}
+function selectVisible(){filtered().forEach(x=>selected.add(x.employeeId));render()}
+function clearSelection(){selected.clear();render()}
+function downloadOne(id){
+  const x=items.find(a=>a.employeeId===id);if(!x)return;
+  const a=document.createElement('a');a.href=x.downloadUrl;a.download=x.fileName||id+'_QR.png';a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
+}
+function openQR(id){const x=items.find(a=>a.employeeId===id);if(x)window.open(x.downloadUrl,'_blank','noopener')}
+
+async function downloadSelected(){
+  if(!selected.size){toast('Select at least one QR code.');return}
+  const chosen=items.filter(x=>selected.has(x.employeeId));
+  for(const x of chosen) await new Promise(r=>{const a=document.createElement('a');a.href=x.downloadUrl;a.download=x.fileName||x.employeeId+'_QR.png';a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();setTimeout(r,180)});
+  toast(chosen.length+' QR file(s) sent for download. Your browser may ask permission for multiple downloads.');
+}
+
+async function downloadAll(){
+  if(!items.length){toast('No QR files available.');return}
+  showLoading('Preparing ZIP…');
+  try{
+    const data=await jsonp(API_URL+'?action=qrzip&callback=x');
+    if(!data||!data.success)throw new Error(data?.error||'ZIP creation failed');
+    const a=document.createElement('a');a.href=data.downloadUrl;a.download=data.fileName||'GGL_All_QR_Codes.zip';a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();toast('ZIP ready · '+data.count+' QR file(s).');
+  }catch(e){toast(e.message)}finally{hideLoading()}
+}
+
+function showLoading(t){document.getElementById('loadText').textContent=t;document.getElementById('loading').classList.add('show')}
+function hideLoading(){document.getElementById('loading').classList.remove('show')}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>e.classList.remove('show'),4200)}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function escAttr(v){return esc(v)}
+function js(v){return String(v??'').replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
