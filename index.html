@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b78e3">
+<title>Gaerish HR · Digital Business Card Management</title>
+
+<style>
+*{box-sizing:border-box}
+:root{
+  --blue:#0878e8;
+  --blue2:#20b7f2;
+  --ink:#0b2d52;
+  --muted:#68819b;
+  --line:#dce9f5;
+  --glass:rgba(255,255,255,.68);
+  --shadow:0 22px 60px rgba(11,74,135,.16);
+}
+html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink)}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 10% 5%,rgba(72,180,255,.35),transparent 30%),
+    radial-gradient(circle at 95% 15%,rgba(38,210,255,.28),transparent 30%),
+    linear-gradient(135deg,#edf7ff,#d9efff 48%,#f7fbff);
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.topbar{
+  position:sticky;top:0;z-index:20;
+  padding:18px clamp(14px,4vw,34px);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:rgba(255,255,255,.52);
+  border-bottom:1px solid rgba(255,255,255,.8);
+  backdrop-filter:blur(22px) saturate(145%);
+  -webkit-backdrop-filter:blur(22px) saturate(145%);
+}
+.brand h1{margin:0;font-size:clamp(20px,3vw,28px);font-weight:850;letter-spacing:-.5px}
+.brand p{margin:4px 0 0;color:var(--muted);font-size:12px;font-weight:650}
+.container{width:min(1400px,94vw);margin:24px auto 50px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.stat{
+  padding:18px;border:1px solid rgba(255,255,255,.85);
+  border-radius:20px;background:var(--glass);
+  box-shadow:var(--shadow);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)
+}
+.stat-label{font-size:10px;font-weight:850;color:#6c89a5;letter-spacing:.8px}
+.stat-value{font-size:28px;font-weight:900;margin-top:5px}
+.toolbar{
+  display:flex;flex-wrap:wrap;gap:9px;margin-bottom:14px;
+  padding:12px;border-radius:18px;background:rgba(255,255,255,.48);
+  border:1px solid rgba(255,255,255,.75);backdrop-filter:blur(16px)
+}
+.search{flex:1;min-width:230px}
+input,select,textarea{
+  width:100%;border:1px solid #d6e4f0;border-radius:12px;
+  background:rgba(255,255,255,.82);padding:11px 12px;color:var(--ink);outline:none
+}
+input:focus,select:focus,textarea:focus{border-color:#58aef5;box-shadow:0 0 0 3px rgba(42,145,235,.12)}
+.btn{
+  border:0;border-radius:11px;padding:10px 14px;font-weight:800
+}
+.btn-primary{background:linear-gradient(135deg,#0878e8,#19b7ef);color:#fff;box-shadow:0 8px 18px rgba(8,120,232,.22)}
+.btn-light{background:rgba(255,255,255,.8);color:var(--ink);border:1px solid #dbe8f3}
+.btn-dark{background:#123a61;color:#fff}
+.btn-danger{background:#fff0f0;color:#bd2c2c;border:1px solid #ffd3d3}
+.btn-green{background:#eafaf2;color:#08784a;border:1px solid #c6efd9}
+.table-wrap{
+  overflow:auto;border-radius:20px;background:rgba(255,255,255,.65);
+  border:1px solid rgba(255,255,255,.85);box-shadow:var(--shadow);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)
+}
+table{width:100%;border-collapse:collapse;min-width:980px}
+th,td{padding:13px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:12px;vertical-align:middle}
+th{font-size:10px;letter-spacing:.6px;color:#6986a1;background:rgba(245,250,255,.68)}
+tr:hover td{background:rgba(231,245,255,.42)}
+.employee-cell{display:flex;align-items:center;gap:10px}
+.avatar{
+  width:40px;height:40px;border-radius:50%;object-fit:cover;
+  border:2px solid #fff;box-shadow:0 4px 12px rgba(10,80,140,.15);
+  background:#dceeff
+}
+.avatar-initials{display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;background:linear-gradient(135deg,#0878e8,#22b9ef)}
+.name{font-weight:850}
+.sub{font-size:10px;color:#7891a9;margin-top:2px}
+.status{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:900}
+.status-active{background:#e7f8ef;color:#087748}
+.status-inactive{background:#fff5df;color:#9b6500}
+.status-deleted{background:#ffecec;color:#b42318}
+.badge-mini{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;margin:2px;border-radius:8px;background:#eef7ff;border:1px solid #d9ebfb;color:#1b5c91;font-size:8px;font-weight:850}
+.actions{display:flex;flex-wrap:wrap;gap:5px}
+.actions .btn{padding:7px 9px;font-size:10px}
+.modal{
+  position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(5,30,55,.28);backdrop-filter:blur(9px)
+}
+.modal.show{display:flex}
+.modal-box{
+  width:min(850px,96vw);max-height:94vh;overflow:auto;border-radius:26px;
+  background:rgba(249,253,255,.91);border:1px solid rgba(255,255,255,.95);
+  box-shadow:0 35px 100px rgba(0,40,80,.28);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)
+}
+.modal-head{position:sticky;top:0;z-index:2;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.7);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}
+.modal-head h2{margin:0;font-size:20px}
+.modal-body{padding:20px}
+.photo-section{
+  display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center;
+  padding:14px;border:1px solid #dcecf8;border-radius:18px;background:rgba(235,247,255,.5);margin-bottom:18px
+}
+.photo-preview{width:112px;height:112px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 8px 25px rgba(10,80,140,.16);background:#dceeff}
+.photo-info p{margin:0 0 10px;font-size:11px;line-height:1.5;color:#6b839b}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}
+.form-group label{display:block;font-size:10px;font-weight:850;color:#65819d;margin:0 0 5px;letter-spacing:.4px}
+.full{grid-column:1/-1}
+.company-panel{
+  margin-top:18px;padding:15px;border-radius:18px;border:1px solid #dcecf8;background:rgba(235,247,255,.48)
+}
+.company-panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:11px}
+.company-panel-title{font-size:11px;font-weight:900;letter-spacing:.5px}
+.company-hint{font-size:10px;color:#7690a9}
+.company-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.company-option{
+  position:relative;display:flex;align-items:center;gap:9px;padding:10px;
+  border-radius:13px;border:1px solid #d8e8f5;background:rgba(255,255,255,.72);transition:.16s
+}
+.company-option:hover{transform:translateY(-1px);border-color:#8dc7f3}
+.company-option input{position:absolute;opacity:0;pointer-events:none}
+.company-option.selected{border-color:#1688e8;background:#e9f6ff;box-shadow:0 5px 14px rgba(22,136,232,.12)}
+.company-logo-mini{width:38px;height:38px;border-radius:10px;object-fit:contain;background:#fff;border:1px solid #e0ebf4;padding:4px;flex:0 0 38px}
+.company-option-text strong{display:block;font-size:9px}
+.company-option-text span{display:block;font-size:8px;color:#7890a8;margin-top:2px}
+.company-mini{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;margin:2px;border-radius:8px;background:#fff;border:1px solid #d9ebfb;color:#1b5c91;font-size:8px;font-weight:850}
+.company-mini img{width:16px;height:16px;object-fit:contain}
+.badge-panel{
+  margin-top:18px;padding:15px;border-radius:18px;border:1px solid #dcecf8;background:rgba(235,247,255,.48)
+}
+.badge-panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:11px}
+.badge-panel-title{font-size:11px;font-weight:900;letter-spacing:.5px}
+.badge-hint{font-size:10px;color:#7690a9}
+.badge-picker{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.badge-option{
+  position:relative;display:flex;align-items:center;gap:8px;padding:9px;
+  border-radius:12px;border:1px solid #d8e8f5;background:rgba(255,255,255,.72);transition:.16s
+}
+.badge-option:hover{transform:translateY(-1px);border-color:#8dc7f3}
+.badge-option input{position:absolute;opacity:0;pointer-events:none}
+.badge-option.selected{border-color:#1688e8;background:#e9f6ff;box-shadow:0 5px 14px rgba(22,136,232,.12)}
+.badge-dot{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:950;flex:0 0 30px;background:linear-gradient(135deg,var(--c1),var(--c2))}
+.badge-option-text strong{display:block;font-size:9px}
+.badge-option-text span{display:block;font-size:8px;color:#7890a8;margin-top:2px}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;padding:16px 20px;border-top:1px solid var(--line)}
+.loading{
+  position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
+  background:rgba(5,30,55,.25);backdrop-filter:blur(8px)
+}
+.loading.show{display:flex}
+.loading-box{padding:24px 30px;border-radius:20px;background:rgba(255,255,255,.9);text-align:center;box-shadow:0 25px 70px rgba(0,40,80,.2)}
+.spinner{width:32px;height:32px;border:3px solid #dbeafa;border-top-color:#0878e8;border-radius:50%;animation:spin .75s linear infinite;margin:auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{
+  position:fixed;right:20px;bottom:20px;z-index:300;max-width:360px;
+  padding:12px 15px;border-radius:13px;background:#123a61;color:#fff;font-size:11px;font-weight:750;
+  box-shadow:0 15px 35px rgba(0,30,70,.24);display:none
+}
+.toast.show{display:block}
+.empty{padding:35px;text-align:center;color:#7891a8;font-size:12px}
+@media(max-width:800px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .badge-picker{grid-template-columns:repeat(2,1fr)}
+  .company-picker{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .topbar{align-items:flex-start;flex-direction:column}
+  .topbar > div:last-child{width:100%}
+  .topbar > div:last-child .btn{flex:1}
+  #badgeModal .modal-body > div[style*="grid-template-columns"]{grid-template-columns:1fr !important}
+
+  .topbar .btn{width:100%}
+  .container{width:96vw}
+  .stats{gap:8px}
+  .stat{padding:14px}
+  .form-grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+  .photo-section{grid-template-columns:1fr;text-align:center}
+  .photo-preview{margin:auto}
+  .modal-body{padding:14px}
+  .badge-picker{grid-template-columns:1fr 1fr}
+  .company-picker{grid-template-columns:1fr}
+}
+
+/* =========================================================
+   GGL CLAYMORPHIC RESPONSIVE UI OVERRIDES
+   ========================================================= */
+:root{
+  --clay-bg:#eaf3fa;
+  --clay-surface:#edf6fc;
+  --clay-text:#12324f;
+  --clay-muted:#718ba3;
+  --clay-blue:#1686e8;
+  --clay-shadow-light:rgba(255,255,255,.95);
+  --clay-shadow-dark:rgba(92,126,155,.22);
+}
+body{
+  background:
+    radial-gradient(circle at 10% 8%,rgba(255,255,255,.95),transparent 28%),
+    radial-gradient(circle at 92% 12%,rgba(177,226,255,.55),transparent 30%),
+    linear-gradient(145deg,#dfeef8,#edf6fc 48%,#dcecf7);
+  color:var(--clay-text);
+}
+.topbar,.top,.toolbar,.stats .stat,.stat,.table-wrap,.modal-box,.photo-section,.company-panel,.badge-panel{
+  background:rgba(235,245,252,.88)!important;
+  border:1px solid rgba(255,255,255,.95)!important;
+  box-shadow:8px 8px 20px var(--clay-shadow-dark),-8px -8px 20px var(--clay-shadow-light)!important;
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.btn,input,select,textarea,.company-option,.badge-option{
+  box-shadow:4px 4px 10px rgba(92,126,155,.16),-4px -4px 10px rgba(255,255,255,.92);
+}
+.btn:active{transform:translateY(1px);box-shadow:inset 3px 3px 7px rgba(92,126,155,.18),inset -3px -3px 7px rgba(255,255,255,.8)}
+.stat{border-radius:22px!important}
+.table-wrap{border-radius:24px!important;overflow:auto}
+th{background:rgba(224,238,248,.8)!important}
+td,th{border-color:rgba(188,211,227,.65)!important}
+.modal{background:rgba(58,91,116,.25)!important}
+.modal-box{border-radius:28px!important}
+@media(max-width:800px){
+  .container,.wrap{width:95vw!important}
+  .toolbar{padding:10px!important}
+}
+@media(max-width:600px){
+  .container,.wrap{width:94vw!important;margin-top:16px!important}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .stat{min-width:0}
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <h1>Gaerish Digital Business Card</h1>
+    <p>Employee QR · Contact · Photo · Specialty Badge Management</p>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="btn btn-light" onclick="openBadgeManager()">Manage Badges</button><button class="btn btn-primary" onclick="openAddModal()">+ Add Employee</button></div>
+</header>
+
+<main class="container">
+
+  <section class="stats">
+    <div class="stat"><div class="stat-label">TOTAL EMPLOYEES</div><div class="stat-value" id="totalCount">0</div></div>
+    <div class="stat"><div class="stat-label">ACTIVE</div><div class="stat-value" id="activeCount">0</div></div>
+    <div class="stat"><div class="stat-label">QR GENERATED</div><div class="stat-value" id="generatedCount">0</div></div>
+    <div class="stat"><div class="stat-label">PENDING</div><div class="stat-value" id="pendingCount">0</div></div>
+  </section>
+
+  <section class="toolbar">
+    <input class="search" id="search" placeholder="Search employee, ID, department or badge..." oninput="renderTable()">
+    <button class="btn btn-light" onclick="selectAll()">Select All</button>
+    <button class="btn btn-light" onclick="clearSelection()">Clear</button>
+    <button class="btn btn-dark" onclick="generateSelectedQR()">Generate Selected QR</button>
+    <button class="btn btn-dark" onclick="generateAllQR()">Generate All QR</button>
+    <button class="btn btn-light" onclick="loadAll()">Refresh</button><button class="btn btn-light" onclick="diagnoseDatabase()">DB Test</button>
+    <button class="btn btn-light" onclick="undoRemove()">Undo Last Remove</button>
+  </section>
+
+  <section class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th width="36"><input type="checkbox" id="masterCheck" onchange="toggleMaster(this)"></th>
+          <th>EMPLOYEE</th>
+          <th>CONTACT</th>
+          <th>SPECIALTY BADGES</th>
+          <th>STATUS</th>
+          <th>QR</th>
+          <th>ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody id="employeeBody"></tbody>
+    </table>
+  </section>
+
+</main>
+
+<div class="modal" id="employeeModal">
+  <div class="modal-box">
+
+    <div class="modal-head">
+      <h2 id="modalTitle">Add Employee</h2>
+      <button class="btn btn-light" onclick="closeModal()">✕</button>
+    </div>
+
+    <form id="employeeForm" onsubmit="saveEmployee(event)">
+      <div class="modal-body">
+
+        <section class="photo-section">
+          <img id="photoPreview" class="photo-preview" alt="Employee photo">
+          <div class="photo-info">
+            <p>Upload a passport-style employee photograph. It is center-cropped to a professional 1:1 image before being stored in Drive.</p>
+            <input type="file" id="photoInput" accept="image/*" onchange="processPhoto(event)">
+            <button type="button" class="btn btn-light" style="margin-top:8px" onclick="removePhoto()">Remove Photo</button>
+          </div>
+        </section>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Employee ID *</label>
+            <input id="employeeId" required placeholder="GGL0211">
+          </div>
+
+          <div class="form-group">
+            <label>Status</label>
+            <select id="status">
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="INACTIVE">INACTIVE</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Name *</label>
+            <input id="name" required>
+          </div>
+
+          <div class="form-group">
+            <label>Designation</label>
+            <input id="designation">
+          </div>
+
+          <div class="form-group">
+            <label>Department</label>
+            <input id="department">
+          </div>
+
+          <div class="form-group">
+            <label>Mobile</label>
+            <input id="mobile" type="tel">
+          </div>
+
+          <div class="form-group">
+            <label>WhatsApp</label>
+            <input id="whatsapp" type="tel">
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <input id="email" type="email">
+          </div>
+
+          <div class="form-group">
+            <label>Website</label>
+            <input id="website" value="https://www.gaerishlogistics.com">
+          </div>
+
+          <div class="form-group">
+            <label>LinkedIn</label>
+            <input id="linkedin">
+          </div>
+
+          <div class="form-group full">
+            <label>Address</label>
+            <textarea id="address" rows="3"></textarea>
+          </div>
+
+        </div>
+
+        <section class="company-panel">
+          <div class="company-panel-head">
+            <div>
+              <div class="company-panel-title">COMPANY / BRANDING</div>
+              <div class="company-hint">Select every company this employee works for. One employee can belong to all three companies.</div>
+            </div>
+            <button type="button" class="btn btn-light" onclick="resetCompanies()">Logistics Only</button>
+          </div>
+          <div id="companyPicker" class="company-picker"></div>
+        </section>
+
+        <section class="badge-panel">
+          <div class="badge-panel-head">
+            <div>
+              <div class="badge-panel-title">SPECIALTY & CAPABILITY BADGES</div>
+              <div class="badge-hint">One employee can have multiple badges. Use “Manage Badges” to create or edit badge types.</div>
+            </div>
+            <button type="button" class="btn btn-light" onclick="clearBadges()">Clear</button>
+          </div>
+          <div id="badgePicker" class="badge-picker"></div>
+        </section>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Employee</button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+
+<div class="modal" id="badgeModal">
+  <div class="modal-box">
+
+    <div class="modal-head">
+      <h2>Manage Specialty Badges</h2>
+      <button class="btn btn-light" onclick="closeBadgeManager()">✕</button>
+    </div>
+
+    <div class="modal-body">
+
+      <div style="padding:14px;border-radius:18px;background:rgba(235,247,255,.55);border:1px solid #dcecf8;margin-bottom:15px">
+        <div style="font-size:11px;font-weight:900;margin-bottom:5px">
+          BADGE MASTER
+        </div>
+        <div style="font-size:10px;color:#7189a1;line-height:1.5">
+          Create, edit or disable specialty badges. These badges become available
+          immediately in the employee creation/edit screen.
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:15px">
+        <input id="badgeNameInput" placeholder="Badge Name e.g. COLD CHAIN">
+        <input id="badgeKeyInput" placeholder="Badge Key e.g. COLD_CHAIN">
+        <input id="badgeIconInput" placeholder="Icon name e.g. snowflake">
+        <input id="badgeColor1Input" placeholder="Color 1 e.g. 6DD6FF">
+        <input id="badgeColor2Input" placeholder="Color 2 e.g. 1169BD">
+        <input id="badgeSortInput" type="number" placeholder="Sort Order">
+        <input id="badgeDescriptionInput" style="grid-column:1/-1" placeholder="Description">
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:18px">
+        <button class="btn btn-primary" id="saveBadgeButton" onclick="saveBadge()">+ Create Badge</button>
+        <button class="btn btn-light" onclick="resetBadgeForm()">Clear</button>
+      </div>
+
+      <div class="table-wrap" style="box-shadow:none">
+        <table style="min-width:760px">
+          <thead>
+            <tr>
+              <th>BADGE</th>
+              <th>KEY</th>
+              <th>DESCRIPTION</th>
+              <th>STATUS</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody id="badgeManagerBody"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="loading" id="loading">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div id="loadingText" style="margin-top:12px;font-weight:850;font-size:12px">Loading...</div>
+    <div id="loadingSub" style="margin-top:4px;color:#7891a8;font-size:10px"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+let employees = [];
+let badges = [];
+const COMPANIES = [
+  {key:'LOGISTICS', name:'Gaerish Logistics Pvt Ltd', shortName:'Gaerish Logistics', logo:'https://raw.githubusercontent.com/PharmaQA-ops/ggl-main-dashboard/main/logo.png', website:'https://www.gaerishlogistics.com'},
+  {key:'DEFENCE', name:'Gaerish Defence Pvt Ltd', shortName:'Gaerish Defence', logo:'https://raw.githubusercontent.com/PharmaQA-ops/ggl-main-dashboard/main/logo1.png', website:'https://www.gaerishdefence.com'},
+  {key:'ETRADE', name:'Gaerish eTrade Pvt Ltd', shortName:'Gaerish eTrade', logo:'https://raw.githubusercontent.com/PharmaQA-ops/ggl-main-dashboard/main/logo2.png', website:'https://www.gaerishetrade.com'}
+];
+let selectedIds = new Set();
+let editingEmployeeId = '';
+let currentPhotoData = null;
+let photoRemoved = false;
+
+document.addEventListener('DOMContentLoaded', function(){
+  loadAll();
+});
+
+document.addEventListener('click', function(event){
+  const button = event.target.closest('button');
+  if(button) button.style.webkitTapHighlightColor = 'transparent';
+}, {passive:true});
+
+function loadAll(){
+  showLoading('Loading database...','Employee_Master + Badge_Master');
+  google.script.run
+    .withSuccessHandler(function(result){
+      employees = Array.isArray(result)
+        ? result
+        : (result && Array.isArray(result.employees)
+            ? result.employees
+            : (result && Array.isArray(result.data)
+                ? result.data
+                : []));
+
+      google.script.run
+        .withSuccessHandler(function(badgeResult){
+          badges = Array.isArray(badgeResult)
+            ? badgeResult
+            : (badgeResult && Array.isArray(badgeResult.badges)
+                ? badgeResult.badges
+                : (badgeResult && Array.isArray(badgeResult.data)
+                    ? badgeResult.data
+                    : []));
+          hideLoading();
+          renderTable();
+          updateStats();
+        })
+        .withFailureHandler(function(error){
+          hideLoading();
+          showToast(getErrorMessage(error));
+        })
+        .getBadges();
+    })
+    .withFailureHandler(function(error){
+      hideLoading();
+      document.getElementById('employeeBody').innerHTML =
+        '<tr><td colspan="7" class="empty">Database connection failed: '+esc(getErrorMessage(error))+'</td></tr>';
+      showToast('Employee database error: '+getErrorMessage(error));
+    })
+    .getEmployees();
+}
+
+function diagnoseDatabase(){
+  showLoading('Testing database...','Checking Apps Script + Employee_Master');
+  google.script.run
+    .withSuccessHandler(function(result){
+      hideLoading();
+      const count = Array.isArray(result) ? result.length :
+        (result && Array.isArray(result.employees) ? result.employees.length :
+        (result && Array.isArray(result.data) ? result.data.length : 0));
+      const shape = Array.isArray(result) ? 'array' :
+        (result && result.employees ? 'object.employees' :
+        (result && result.data ? 'object.data' : typeof result));
+      showToast('DB OK · '+count+' employee(s) · response: '+shape);
+      console.log('GGL DB TEST:', result);
+    })
+    .withFailureHandler(function(error){
+      hideLoading();
+      showToast('DB ERROR: '+getErrorMessage(error));
+      console.error('GGL DB ERROR:', error);
+    })
+    .getEmployees();
+}
+
+function renderTable(){
+  const body = document.getElementById('employeeBody');
+  const query = document.getElementById('search').value.trim().toLowerCase();
+
+  const filtered = employees.filter(function(e){
+    const badgeText = (e.badges || []).map(function(b){return b.label;}).join(' ');
+    const text = [
+      e.employeeId,e.name,e.designation,e.department,e.company,
+      e.mobile,e.email,badgeText
+    ].join(' ').toLowerCase();
+    return !query || text.indexOf(query) !== -1;
+  });
+
+  if(!filtered.length){
+    body.innerHTML = '<tr><td colspan="7" class="empty">No employees found.</td></tr>';
+    return;
+  }
+
+  body.innerHTML = filtered.map(function(e){
+    const id = esc(e.employeeId);
+    const status = String(e.status || 'ACTIVE').toUpperCase();
+    const statusClass =
+      status === 'DELETED' ? 'status-deleted' :
+      status === 'INACTIVE' ? 'status-inactive' :
+      'status-active';
+
+    const avatar = e.photoUrl
+      ? '<img class="avatar" src="'+escAttr(photoUrl(e.photoUrl))+'" onerror="this.outerHTML=\''+avatarFallback(e.name)+'\'">'
+      : avatarFallback(e.name);
+
+    const badgeHtml = (e.badges || []).map(function(b){
+      return '<span class="badge-mini">'+esc(b.label)+'</span>';
+    }).join('') || '<span class="sub">No badges</span>';
+
+    const companyKeys = e.companies && e.companies.length
+      ? e.companies
+      : employeeCompanyKeys(e.company);
+    const companyHtml = companyKeys.map(function(key){
+      const c = COMPANIES.find(function(item){return item.key === normalizeCompanyKey(key);});
+      return c ? '<span class="company-mini"><img src="'+escAttr(c.logo)+'" alt="">'+esc(c.shortName)+'</span>' : '';
+    }).join('') || '<span class="sub">Logistics</span>';
+
+    const contact =
+      (e.mobile ? esc(e.mobile) : '') +
+      (e.email ? '<div class="sub">'+esc(e.email)+'</div>' : '');
+
+    let actions = '';
+
+    if(status === 'DELETED'){
+      actions =
+        '<button class="btn btn-green" onclick="restoreEmployee(\''+js(id)+'\')">Restore</button>';
+    }else{
+      actions =
+        '<button class="btn btn-light" onclick="editEmployee(\''+js(id)+'\')">Edit</button>' +
+        '<button class="btn btn-dark" onclick="generateOneQR(\''+js(id)+'\')">QR</button>' +
+        '<button class="btn btn-danger" onclick="removeEmployee(\''+js(id)+'\')">Remove</button>';
+    }
+
+    return '<tr>' +
+      '<td><input type="checkbox" '+(selectedIds.has(e.employeeId)?'checked':'')+' onchange="toggleEmployee(\''+js(id)+'\',this.checked)"></td>' +
+      '<td><div class="employee-cell">'+avatar+'<div><div class="name">'+esc(e.name)+'</div><div class="sub">'+esc(e.employeeId)+' · '+esc(e.designation || e.department || '')+'</div><div>'+companyHtml+'</div></div></div></td>' +
+      '<td>'+contact+'</td>' +
+      '<td>'+badgeHtml+'</td>' +
+      '<td><span class="status '+statusClass+'">'+esc(status)+'</span></td>' +
+      '<td>'+ (String(e.qrStatus || '').toUpperCase()==='GENERATED'
+        ? '<span class="status status-active">GENERATED</span>'
+        : '<span class="status status-inactive">PENDING</span>') + '</td>' +
+      '<td><div class="actions">'+actions+'</div></td>' +
+      '</tr>';
+  }).join('');
+}
+
+function avatarFallback(name){
+  return '<div class="avatar avatar-initials">'+esc(initials(name))+'</div>';
+}
+
+function photoUrl(value){
+  const url = String(value || '').trim();
+  if(!url) return '';
+  const m = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?[^#]*id=)([A-Za-z0-9_-]+)/);
+  if(m) return 'https://drive.google.com/thumbnail?id='+encodeURIComponent(m[1])+'&sz=w600';
+  return url;
+}
+
+function openAddModal(){
+  editingEmployeeId = '';
+  currentPhotoData = null;
+  photoRemoved = false;
+
+  document.getElementById('modalTitle').textContent = 'Add Employee';
+  document.getElementById('employeeForm').reset();
+  document.getElementById('website').value = 'https://www.gaerishlogistics.com';
+  document.getElementById('employeeId').disabled = false;
+
+  showPreview('');
+  renderCompanyPicker(['LOGISTICS']);
+  renderBadgePicker([]);
+  document.getElementById('employeeModal').classList.add('show');
+
+  google.script.run
+    .withSuccessHandler(function(result){
+      badges = Array.isArray(result) ? result : [];
+      renderBadgePicker([]);
+    })
+    .withFailureHandler(function(error){
+      showToast('Unable to load badges: '+getErrorMessage(error));
+    })
+    .getBadges();
+}
+
+function editEmployee(id){
+  const e = employees.find(function(item){
+    return String(item.employeeId).toUpperCase() === String(id).toUpperCase();
+  });
+
+  if(!e) return;
+
+  editingEmployeeId = e.employeeId;
+  currentPhotoData = null;
+  photoRemoved = false;
+
+  document.getElementById('modalTitle').textContent = 'Edit Employee';
+  setValue('employeeId',e.employeeId);
+  setValue('name',e.name);
+  setValue('designation',e.designation);
+  setValue('department',e.department);
+  // Company is managed by the multi-company picker; no legacy #company input is required.
+  setValue('mobile',e.mobile);
+  setValue('whatsapp',e.whatsapp);
+  setValue('email',e.email);
+  setValue('website',e.website);
+  setValue('linkedin',e.linkedin);
+  setValue('address',e.address);
+  document.getElementById('status').value = e.status === 'INACTIVE' ? 'INACTIVE' : 'ACTIVE';
+  document.getElementById('employeeId').disabled = true;
+
+  showPreview(e.photoUrl || '');
+  renderCompanyPicker(e.companies && e.companies.length ? e.companies : employeeCompanyKeys(e.company));
+  renderBadgePicker((e.badges || []).map(function(b){return b.badgeId;}));
+
+  document.getElementById('employeeModal').classList.add('show');
+
+  google.script.run
+    .withSuccessHandler(function(result){
+      badges = Array.isArray(result) ? result : [];
+      renderCompanyPicker(e.companies && e.companies.length ? e.companies : employeeCompanyKeys(e.company));
+      renderBadgePicker((e.badges || []).map(function(b){return b.badgeId;}));
+    })
+    .withFailureHandler(function(error){
+      showToast('Unable to refresh badges: '+getErrorMessage(error));
+    })
+    .getBadges();
+}
+
+function closeModal(){
+  document.getElementById('employeeModal').classList.remove('show');
+}
+
+document.getElementById('employeeModal').addEventListener('click', function(event){
+  if(event.target === this) closeModal();
+});
+
+document.getElementById('badgeModal').addEventListener('click', function(event){
+  if(event.target === this) closeBadgeManager();
+});
+
+function normalizeCompanyKey(value){
+  const raw = String(value || '').trim().toUpperCase();
+  const aliases = {
+    'GAERISH LOGISTICS':'LOGISTICS',
+    'GAERISH LOGISTICS PVT LTD':'LOGISTICS',
+    'GAERISH DEFENCE':'DEFENCE',
+    'GAERISH DEFENCE PVT LTD':'DEFENCE',
+    'GAERISH ETRADE':'ETRADE',
+    'GAERISH ETRADE PVT LTD':'ETRADE',
+    'E-TRADE':'ETRADE'
+  };
+  return aliases[raw] || raw;
+}
+
+function employeeCompanyKeys(value){
+  if(Array.isArray(value)) return value.map(normalizeCompanyKey).filter(Boolean);
+  return String(value || '').split(/[|,;]+/).map(normalizeCompanyKey).filter(function(key,i,a){
+    return COMPANIES.some(function(c){return c.key===key;}) && a.indexOf(key)===i;
+  });
+}
+
+function renderCompanyPicker(selected){
+  const container = document.getElementById('companyPicker');
+  const set = new Set((selected || []).map(normalizeCompanyKey));
+  container.innerHTML = COMPANIES.map(function(c){
+    const checked = set.has(c.key);
+    return '<label class="company-option '+(checked?'selected':'')+'">' +
+      '<input type="checkbox" value="'+escAttr(c.key)+'" '+(checked?'checked':'')+' onchange="companyChanged(this)">' +
+      '<img class="company-logo-mini" src="'+escAttr(c.logo)+'" alt="'+escAttr(c.name)+' logo">' +
+      '<span class="company-option-text"><strong>'+esc(c.name)+'</strong><span>'+esc(c.shortName)+'</span></span>' +
+      '</label>';
+  }).join('');
+}
+
+function companyChanged(input){
+  input.closest('.company-option').classList.toggle('selected', input.checked);
+}
+
+function selectedCompanyKeys(){
+  return Array.from(document.querySelectorAll('#companyPicker input[type="checkbox"]:checked')).map(function(input){
+    return input.value;
+  });
+}
+
+function resetCompanies(){
+  renderCompanyPicker(['LOGISTICS']);
+}
+
+function renderBadgePicker(selected){
+  const container = document.getElementById('badgePicker');
+  const set = new Set(selected || []);
+
+  container.innerHTML = badges.map(function(b){
+    const checked = set.has(b.badgeId);
+    return '<label class="badge-option '+(checked?'selected':'')+'" style="--c1:#'+escAttr(b.color1 || '4AAEFF')+';--c2:#'+escAttr(b.color2 || '1768C0')+'">' +
+      '<input type="checkbox" value="'+escAttr(b.badgeId)+'" '+(checked?'checked':'')+' onchange="badgeChanged(this)">' +
+      '<span class="badge-dot" style="--c1:#'+escAttr(b.color1 || '4AAEFF')+';--c2:#'+escAttr(b.color2 || '1768C0')+'">'+badgeMark(b.badgeKey)+'</span>' +
+      '<span class="badge-option-text"><strong>'+esc(b.badgeName)+'</strong><span>'+esc(b.description || '')+'</span></span>' +
+      '</label>';
+  }).join('');
+}
+
+function badgeChanged(input){
+  input.closest('.badge-option').classList.toggle('selected',input.checked);
+}
+
+function clearBadges(){
+  document.querySelectorAll('#badgePicker input[type="checkbox"]').forEach(function(input){
+    input.checked = false;
+    input.closest('.badge-option').classList.remove('selected');
+  });
+}
+
+
+function saveEmployee(event){
+  event.preventDefault();
+
+  const employee = {
+    'Employee ID': getValue('employeeId'),
+    'Name': getValue('name'),
+    'Designation': getValue('designation'),
+    'Department': getValue('department'),
+    'Mobile': getValue('mobile'),
+    'WhatsApp': getValue('whatsapp'),
+    'Email': getValue('email'),
+    'Website': getValue('website'),
+    'LinkedIn': getValue('linkedin'),
+    'Address': getValue('address'),
+    'Status': getValue('status')
+  };
+
+  const companyKeys = selectedCompanyKeys();
+  if(!companyKeys.length){
+    showToast('Select at least one company.');
+    return;
+  }
+
+  employee['Company'] = companyKeys.join('|');
+
+  showLoading(editingEmployeeId ? 'Updating employee...' : 'Adding employee...','Saving Employee_Master');
+
+  const runner = google.script.run
+    .withSuccessHandler(function(result){
+      saveCompaniesAndBadges(result, employee['Employee ID'], companyKeys);
+    })
+    .withFailureHandler(function(error){
+      hideLoading();
+      showToast(getErrorMessage(error));
+    });
+
+  if(editingEmployeeId){
+    runner.updateEmployee(employee);
+  }else{
+    runner.addEmployee(employee);
+  }
+}
+
+function saveCompaniesAndBadges(result,id,companyKeys){
+  google.script.run
+    .withSuccessHandler(function(){
+      saveBadgesAndPhoto(result,id);
+    })
+    .withFailureHandler(function(error){
+      hideLoading();
+      showToast(getErrorMessage(error));
+    })
+    .setEmployeeCompanies(id,companyKeys,companyKeys[0]);
+}
+
+function saveBadgesAndPhoto(result,id){
+  google.script.run
+    .withSuccessHandler(function(){
+      if(currentPhotoData){
+        uploadPhotoAfterSave(id,result);
+      }else if(editingEmployeeId && photoRemoved){
+        google.script.run
+          .withSuccessHandler(function(){
+            finishSave(result);
+          })
+          .withFailureHandler(function(error){
+            hideLoading();
+            showToast(getErrorMessage(error));
+          })
+          .deleteEmployeePhoto(id);
+      }else{
+        finishSave(result);
+      }
+    })
+    .withFailureHandler(function(error){
+      hideLoading();
+      showToast(getErrorMessage(error));
+    })
+    .setEmployeeBadges(id,selectedBadgeIds());
+}
+
+function uploadPhotoAfterSave(id,result){
+  showLoading('Uploading employee photo...','Saving 1:1 profile image');
+
+  google.script.run
+    .withSuccessHandler(function(){
+      finishSave(result);
+    })
+    .withFailureHandler(function(error){
+      finishSave(result,'Employee saved, but photo upload failed: '+getErrorMessage(error));
+    })
+    .saveEmployeePhoto(id,currentPhotoData);
+}
+
+function finishSave(result,customMessage){
+  hideLoading();
+  closeModal();
+  showToast(customMessage || (result && result.message) || 'Employee saved successfully.');
+  loadAll();
+}
+
+
+let editingBadgeId = '';
+
+function openBadgeManager(){
+  editingBadgeId = '';
+  resetBadgeForm();
+  renderBadgeManager();
+  document.getElementById('badgeModal').classList.add('show');
+}
+
+function closeBadgeManager(){
+  document.getElementById('badgeModal').classList.remove('show');
+}
+
+function resetBadgeForm(){
+  editingBadgeId = '';
+  document.getElementById('badgeNameInput').value = '';
+  document.getElementById('badgeKeyInput').value = '';
+  document.getElementById('badgeIconInput').value = '';
+  document.getElementById('badgeColor1Input').value = '6DD6FF';
+  document.getElementById('badgeColor2Input').value = '1169BD';
+  document.getElementById('badgeSortInput').value = '';
+  document.getElementById('badgeDescriptionInput').value = '';
+  document.getElementById('saveBadgeButton').textContent = '+ Create Badge';
+}
+
+function renderBadgeManager(){
+  const body = document.getElementById('badgeManagerBody');
+
+  if(!badges.length){
+    body.innerHTML =
+      '<tr><td colspan="5" class="empty">No badges found.</td></tr>';
+    return;
+  }
+
+  body.innerHTML = badges.map(function(b){
+    const key = esc(b.badgeKey || '');
+    const color1 = escAttr(b.color1 || '6DD6FF');
+    const color2 = escAttr(b.color2 || '1169BD');
+
+    return '<tr>' +
+      '<td>' +
+        '<div style="display:flex;align-items:center;gap:9px">' +
+          '<span class="badge-dot" style="--c1:#'+color1+';--c2:#'+color2+'">'+badgeMark(b.badgeKey)+'</span>' +
+          '<strong>'+esc(b.badgeName)+'</strong>' +
+        '</div>' +
+      '</td>' +
+      '<td><code>'+key+'</code></td>' +
+      '<td>'+esc(b.description || '')+'</td>' +
+      '<td><span class="status status-active">ACTIVE</span></td>' +
+      '<td>' +
+        '<div class="actions">' +
+          '<button class="btn btn-light" onclick="editBadge(\''+js(b.badgeId)+'\')">Edit</button>' +
+          '<button class="btn btn-danger" onclick="disableBadge(\''+js(b.badgeId)+'\')">Disable</button>' +
+        '</div>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function editBadge(id){
+  const b = badges.find(function(item){
+    return item.badgeId === id;
+  });
+
+  if(!b) return;
+
+  editingBadgeId = b.badgeId;
+
+  document.getElementById('badgeNameInput').value = b.badgeName || '';
+  document.getElementById('badgeKeyInput').value = b.badgeKey || '';
+  document.getElementById('badgeIconInput').value = b.icon || '';
+  document.getElementById('badgeColor1Input').value = b.color1 || '6DD6FF';
+  document.getElementById('badgeColor2Input').value = b.color2 || '1169BD';
+  document.getElementById('badgeSortInput').value = b.sortOrder || '';
+  document.getElementById('badgeDescriptionInput').value = b.description || '';
+
+  document.getElementById('saveBadgeButton').textContent = 'Save Badge Changes';
+
+  document.getElementById('badgeModal').querySelector('.modal-body').scrollTop = 0;
+}
+
+function saveBadge(){
+  const payload = {
+    'Badge ID': editingBadgeId,
+    'Badge Name': document.getElementById('badgeNameInput').value.trim(),
+    'Badge Key': document.getElementById('badgeKeyInput').value.trim(),
+    'Icon': document.getElementById('badgeIconInput').value.trim(),
+    'Color 1': document.getElementById('badgeColor1Input').value.trim(),
+    'Color 2': document.getElementById('badgeColor2Input').value.trim(),
+    'Description': document.getElementById('badgeDescriptionInput').value.trim(),
+    'Sort Order': document.getElementById('badgeSortInput').value
+  };
+
+  if(!payload['Badge Name']){
+    showToast('Badge Name is required.');
+    return;
+  }
+
+  showLoading(editingBadgeId ? 'Updating badge...' : 'Creating badge...','Saving Badge_Master');
+
+  const runner = google.script.run
+    .withSuccessHandler(function(result){
+      badges = result.badges || [];
+      hideLoading();
+      resetBadgeForm();
+      renderBadgeManager();
+      renderBadgePicker(selectedBadgeIds());
+      showToast(result.message || 'Badge saved.');
+    })
+    .withFailureHandler(function(error){
+      hideLoading();
+      showToast(getErrorMessage(error));
+    });
+
+  if(editingBadgeId){
+    runner.updateBadge(payload);
+  }else{
+    runner.addBadge(payload);
+  }
+}
+
+function disableBadge(id){
+  const b = badges.find(function(item){
+    return item.badgeId === id;
+  });
+
+  if(!b) return;
+
+  if(!confirm('Disable the "'+b.badgeName+'" badge?\\n\\nExisting employee assignments will remain stored, but the badge will no longer be available as an active badge.')) return;
+
+  showLoading('Disabling badge...',b.badgeName);
+
+  google.script.run
+    .withSuccessHandler(function(result){
+      badges = result.badges || [];
+      hideLoading();
+      renderBadgeManager();
+      renderBadgePicker(selectedBadgeIds());
+      showToast(result.message || 'Badge disabled.');
+    })
+    .withFailureHandler(function(error){
+      hideLoading();
+      showToast(getErrorMessage(error));
+    })
+    .deleteBadge(id);
+}
+
+function selectedBadgeIds(){
+  return Array.from(
+    document.querySelectorAll('#badgePicker input[type="checkbox"]:checked')
+  ).map(function(input){
+    return input.value;
+  });
+}
+
+function processPhoto(event){
+  const file = event.target.files[0];
+  if(!file) return;
+
+  if(!file.type.startsWith('image/')){
+    showToast('Please select an image file.');
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(ev){
+    const image = new Image();
+
+    image.onload = function(){
+      const size = 800;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+
+      const ctx = canvas.getContext('2d');
+      const sourceSize = Math.min(image.width,image.height);
+      const sx = (image.width-sourceSize)/2;
+      const sy = (image.height-sourceSize)/2;
+
+      ctx.drawImage(image,sx,sy,sourceSize,sourceSize,0,0,size,size);
+
+      const dataUrl = canvas.toDataURL('image/jpeg',0.88);
+
+      currentPhotoData = {
+        dataUrl:dataUrl,
+        mimeType:'image/jpeg',
+        fileName:'employee.jpg'
+      };
+
+      photoRemoved = false;
+      showPreview(dataUrl);
+    };
+
+    image.src = ev.target.result;
+  };
+
+  reader.readAsDataURL(file);
+}
+
+function showPreview(url){
+  const img = document.getElementById('photoPreview');
+
+  if(!url){
+    img.src = createInitialImage(getValue('name') || 'Employee');
+    return;
+  }
+
+  if(url.startsWith('data:')){
+    img.src = url;
+    return;
+  }
+
+  const normalized = photoUrl(url);
+  img.onerror = function(){
+    img.src = createInitialImage(getValue('name') || 'Employee');
+  };
+  img.src = normalized;
+}
+
+function removePhoto(){
+  currentPhotoData = null;
+  photoRemoved = true;
+  document.getElementById('photoInput').value = '';
+  showPreview('');
+}
+
+function generateOneQR(id){
+  showLoading('Generating QR... ',id);
+
+  google.script.run
+    .withSuccessHandler(function(result){
+      hideLoading();
+      processQRResult(result);
+      loadAll();
+    })
+    .withFailureHandler(function(error){
+      hideLoading();
+      showToast(getErrorMessage(error));
+    })
+    .generateSelected([id]);
+}
+
+function generateSelectedQR(){
+  const ids = Array.from(selectedIds);
+
+  if(!ids.length){
+    showToast('Please select employees first.');
+    return;
+  }
+
+  showLoading('Generating selected QR codes...',ids.length+' employee(s)');
+
+  google.script.run
+    .withSuccessHandler(function(result){
+      hideLoading();
+      processQRResult(result);
+      loadAll();
+    })
+    .withFailureHandler(function(error){
+      hideLoading();
+      showToast(getErrorMessage(error));
+    })
+    .generateSelected(ids);
+}
+
+function generateAllQR(){
+  if(!employees.length){
+    showToast('No employees available.');
+    return;
+  }
+
+  if(!confirm('Generate QR codes for all non-deleted employees?')) return;
+
+  showLoading('Generating all QR codes...','Processing employees');
+
+  google.script.run
+    .withSuccessHandler(function(result){
+      hideLoading();
+      processQRResult(result);
+      loadAll();
+    })
+    .withFailureHandler(function(error){
+      hideLoading();
+      showToast(getErrorMessage(error));
+    })
+    .generateAll();
+}
+
+function processQRResult(result){
+  if(!result){
+    showToast('No response received.');
+    return;
+  }
+
+  if(!result.success){
+    showToast(result.message || 'QR generation failed.');
+    return;
+  }
+
+  const ok=(result.results||[]).filter(function(x){return x.success;}).length;
+  const bad=(result.results||[]).filter(function(x){return !x.success;}).length;
+
+  showToast(bad ? ok+' generated, '+bad+' failed.' : ok+' QR code(s) generated successfully.');
+}
+
+function removeEmployee(id){
+  const e = employees.find(function(item){return item.employeeId===id;});
+  if(!e) return;
+
+  if(!confirm('Remove '+e.name+' ('+id+')?\\n\\nThe employee will be marked DELETED and can be restored.')) return;
+
+  showLoading('Removing employee...',e.name);
+
+  google.script.run
+    .withSuccessHandler(function(result){
+      hideLoading();
+      selectedIds.delete(id);
+      showToast(result.message || 'Employee removed.');
+      loadAll();
+    })
+    .withFailureHandler(function(error){
+      hideLoading();
+      showToast(getErrorMessage(error));
+    })
+    .removeEmployee(id);
+}
+
+function restoreEmployee(id){
+  if(!confirm('Restore employee '+id+'?')) return;
+
+  showLoading('Restoring employee...',id);
+
+  google.script.run
+    .withSuccessHandler(function(result){
+      hideLoading();
+      showToast(result.message || 'Employee restored.');
+      loadAll();
+    })
+    .withFailureHandler(function(error){
+      hideLoading();
+      showToast(getErrorMessage(error));
+    })
+    .restoreEmployee(id);
+}
+
+function undoRemove(){
+  showLoading('Restoring employee...','Undo last removal');
+
+  google.script.run
+    .withSuccessHandler(function(result){
+      hideLoading();
+      showToast(result.message || 'Undo completed.');
+      loadAll();
+    })
+    .withFailureHandler(function(error){
+      hideLoading();
+      showToast(getErrorMessage(error));
+    })
+    .undoRemove();
+}
+
+function toggleEmployee(id,checked){
+  if(checked) selectedIds.add(id);
+  else selectedIds.delete(id);
+}
+
+function selectAll(){
+  employees.forEach(function(e){
+    if(String(e.status).toUpperCase()!=='DELETED'){
+      selectedIds.add(e.employeeId);
+    }
+  });
+  renderTable();
+  document.getElementById('masterCheck').checked=true;
+}
+
+function clearSelection(){
+  selectedIds.clear();
+  document.getElementById('masterCheck').checked=false;
+  renderTable();
+}
+
+function toggleMaster(box){
+  if(box.checked) selectAll();
+  else clearSelection();
+}
+
+function updateStats(){
+  const active=employees.filter(function(e){return String(e.status).toUpperCase()==='ACTIVE';}).length;
+  const generated=employees.filter(function(e){return String(e.status).toUpperCase()!=='DELETED' && String(e.qrStatus).toUpperCase()==='GENERATED';}).length;
+  const pending=employees.filter(function(e){return String(e.status).toUpperCase()!=='DELETED' && String(e.qrStatus).toUpperCase()!=='GENERATED';}).length;
+
+  document.getElementById('totalCount').textContent=employees.length;
+  document.getElementById('activeCount').textContent=active;
+  document.getElementById('generatedCount').textContent=generated;
+  document.getElementById('pendingCount').textContent=pending;
+}
+
+function setValue(id,value){
+  document.getElementById(id).value=value||'';
+}
+
+function getValue(id){
+  return document.getElementById(id).value.trim();
+}
+
+function initials(name){
+  const parts=String(name||'').trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return 'G';
+  if(parts.length===1) return parts[0].substring(0,2).toUpperCase();
+  return (parts[0][0]+parts[parts.length-1][0]).toUpperCase();
+}
+
+function createInitialImage(name){
+  const text=initials(name);
+  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#0878e8"/><stop offset="1" stop-color="#20b7f2"/></linearGradient></defs><rect width="400" height="400" rx="200" fill="url(#g)"/><text x="200" y="225" text-anchor="middle" font-family="Arial" font-size="110" font-weight="800" fill="white">'+text+'</text></svg>';
+  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+}
+
+function badgeMark(key){
+  const k=String(key||'').toUpperCase();
+  const marks={
+    DG:'⚡',PHARMA:'✚',PROJECTS:'◆',QA:'✓',OPERATIONS:'⚙',
+    SALES:'↗',FINANCE:'₹',HR:'●●',IT:'▣',MANAGEMENT:'♛',
+    SPECIALIST:'★',ENTHUSIAST:'♥',INITIATOR:'⚡',SUPPORT:'◉'
+  };
+  return marks[k]||'★';
+}
+
+function showLoading(text,sub){
+  document.getElementById('loadingText').textContent=text||'Loading...';
+  document.getElementById('loadingSub').textContent=sub||'';
+  document.getElementById('loading').classList.add('show');
+}
+
+function hideLoading(){
+  document.getElementById('loading').classList.remove('show');
+}
+
+let toastTimer=null;
+function showToast(message){
+  const toast=document.getElementById('toast');
+  toast.textContent=message||'Done.';
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){toast.classList.remove('show');},3500);
+}
+
+function getErrorMessage(error){
+  if(!error) return 'Unknown error.';
+  return error.message || String(error);
+}
+
+function esc(value){
+  return String(value==null?'':value)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+
+function escAttr(value){
+  return esc(value);
+}
+
+function js(value){
+  return String(value||'')
+    .replace(/\\/g,'\\\\')
+    .replace(/'/g,"\\'");
+}
+</script>
+
+</body>
+</html>
