@@ -17,52 +17,6 @@ button,input,select{font:inherit}button{cursor:pointer}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:15px}.card{position:relative;padding:15px;border-radius:22px;background:rgba(255,255,255,.67);border:1px solid rgba(255,255,255,.9);box-shadow:0 20px 55px rgba(18,91,140,.14);backdrop-filter:blur(20px);transition:.16s}.card:hover{transform:translateY(-2px);box-shadow:0 25px 65px rgba(18,91,140,.19)}.check{position:absolute;top:13px;left:13px;width:18px;height:18px}.qr{width:175px;height:175px;display:block;object-fit:contain;margin:7px auto 13px;border-radius:15px;background:#fff;padding:8px;box-shadow:0 8px 22px rgba(15,74,115,.12)}.name{font-size:14px;font-weight:950}.meta{font-size:10px;color:#728aa0;margin-top:3px;line-height:1.45}.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}.actions .btn{padding:8px 7px;font-size:10px}.filename{margin-top:8px;font-size:9px;color:#7891a6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .empty{text-align:center;padding:50px;color:#7790a7;font-size:12px}.loading{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(5,30,55,.18);backdrop-filter:blur(7px)}.loading.show{display:flex}.loader{padding:24px 30px;border-radius:20px;background:rgba(255,255,255,.92);box-shadow:0 25px 70px rgba(0,40,80,.2);text-align:center}.spinner{width:31px;height:31px;border:3px solid #dcecf8;border-top-color:#0878e8;border-radius:50%;animation:spin .7s linear infinite;margin:auto}@keyframes spin{to{transform:rotate(360deg)}}.toast{position:fixed;right:18px;bottom:18px;z-index:60;display:none;max-width:390px;padding:12px 15px;border-radius:13px;background:#123a61;color:#fff;font-size:11px;font-weight:750;box-shadow:0 15px 35px rgba(0,30,70,.24)}.toast.show{display:block}
 @media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.top{align-items:flex-start;flex-direction:column}.top .btn{width:100%}}@media(max-width:520px){.wrap{width:96vw}.stats{gap:8px}.stat{padding:13px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card{padding:10px;border-radius:17px}.qr{width:125px;height:125px}.actions{grid-template-columns:1fr}.search{min-width:100%}}
-
-/* =========================================================
-   GGL CLAYMORPHIC RESPONSIVE UI OVERRIDES
-   ========================================================= */
-:root{
-  --clay-bg:#eaf3fa;
-  --clay-surface:#edf6fc;
-  --clay-text:#12324f;
-  --clay-muted:#718ba3;
-  --clay-blue:#1686e8;
-  --clay-shadow-light:rgba(255,255,255,.95);
-  --clay-shadow-dark:rgba(92,126,155,.22);
-}
-body{
-  background:
-    radial-gradient(circle at 10% 8%,rgba(255,255,255,.95),transparent 28%),
-    radial-gradient(circle at 92% 12%,rgba(177,226,255,.55),transparent 30%),
-    linear-gradient(145deg,#dfeef8,#edf6fc 48%,#dcecf7);
-  color:var(--clay-text);
-}
-.topbar,.top,.toolbar,.stats .stat,.stat,.table-wrap,.modal-box,.photo-section,.company-panel,.badge-panel{
-  background:rgba(235,245,252,.88)!important;
-  border:1px solid rgba(255,255,255,.95)!important;
-  box-shadow:8px 8px 20px var(--clay-shadow-dark),-8px -8px 20px var(--clay-shadow-light)!important;
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-}
-.btn,input,select,textarea,.company-option,.badge-option{
-  box-shadow:4px 4px 10px rgba(92,126,155,.16),-4px -4px 10px rgba(255,255,255,.92);
-}
-.btn:active{transform:translateY(1px);box-shadow:inset 3px 3px 7px rgba(92,126,155,.18),inset -3px -3px 7px rgba(255,255,255,.8)}
-.stat{border-radius:22px!important}
-.table-wrap{border-radius:24px!important;overflow:auto}
-th{background:rgba(224,238,248,.8)!important}
-td,th{border-color:rgba(188,211,227,.65)!important}
-.modal{background:rgba(58,91,116,.25)!important}
-.modal-box{border-radius:28px!important}
-@media(max-width:800px){
-  .container,.wrap{width:95vw!important}
-  .toolbar{padding:10px!important}
-}
-@media(max-width:600px){
-  .container,.wrap{width:94vw!important;margin-top:16px!important}
-  .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-  .stat{min-width:0}
-}
 </style>
 </head>
 <body>
@@ -93,7 +47,7 @@ td,th{border-color:rgba(188,211,227,.65)!important}
 'use strict';
 
 // Paste your deployed Apps Script Web App /exec URL here.
-const API_URL = 'https://script.google.com/macros/s/AKfycbyOnaQEYIqjIqdAeBY8KNk0brPmJ4IvBA5pPHfvdDhP18zFknmOwmPw8R-9PG8hS7lLIg/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyOnaQEYiqjIqdAeBY8KNk0brPmJ4IvBA5pPHfvdDhP18zFknmOwmPw8R-9PG8hS7lLIg/exec';
 
 let items=[];
 let selected=new Set();
